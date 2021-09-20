@@ -43,5 +43,18 @@ function makePlot(index) {
         }];
 
         Plotly.newPlot("bar", traceData)
+
+        let demographic = data.metadata[index];
+        
+        let demoInfo = d3.select("#sample-metadata");
+
+        demoInfo.selectAll("span").remove();
+        demoInfo.selectAll("br").remove();
+        
+        for (let i=0; i<Object.entries(demographic).length; i++) {
+            demoInfo.append("span").text(`${Object.keys(demographic)[i]}: ${Object.values(demographic)[i]}`).append("br");
+        };
     });
 };
+
+
