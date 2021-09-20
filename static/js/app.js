@@ -19,8 +19,6 @@ makePlot(0);
 d3.select("select").on("change", function() {
     let index = d3.select(this).property("value");
 
-    console.log(index);
-
     makePlot(index);
 });
 
@@ -73,7 +71,50 @@ function makePlot(index) {
             }
         }];
 
-        Plotly.newPlot("bubble", traceBubble)
+        Plotly.newPlot("bubble", traceBubble);
+
+
+        let traceGauge = [{
+            type: "indicator",
+            mode: "gauge+number",
+            title: { 
+                text: "Scrubs per Week", font: { size: 15 } 
+            },
+            value: demographic.wfreq,
+            gauge: {
+                axis: { 
+                    range: [0, 9], 
+                    tickwidth: 2, 
+                    tickcolor: "grey",
+                    tickmode: "linear",
+                },
+                
+                bar: { 
+                    color: "orange", 
+                    thickness: .75 
+                },
+                borderwidth: 2,
+                bordercolor: "gray",
+                steps: [
+                    {range: [0, 1], color: "#F8F3EC", line: {color:"gray", width: 2}},
+                    {range: [1, 2], color: "#F4F1E5", line: {color:"gray", width: 2}},
+                    {range: [2, 3], color: "#E9E6CA", line: {color:"gray", width: 2}},
+                    {range: [3, 4], color: "#E2E4B1", line: {color:"gray", width: 2}},
+                    {range: [4, 5], color: "#D5E49D", line: {color:"gray", width: 2}},
+                    {range: [5, 6], color: "#B7CC92", line: {color:"gray", width: 2}},
+                    {range: [6, 7], color: "#8CBF88", line: {color:"gray", width: 2}},
+                    {range: [7, 8], color: "#8ABB8F", line: {color:"gray", width: 2}},
+                    {range: [8, 9], color: "#85B48A", line: {color:"gray", width: 2}},
+                ],
+              }
+            }
+          ];          
+
+          var layoutGauge = {
+            title: "Belly Button Washing Frequency",
+          };
+          
+          Plotly.newPlot('gauge', traceGauge, layoutGauge);
     });
 };
 
