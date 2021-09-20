@@ -46,7 +46,16 @@ function makePlot(index) {
             orientation: "h"
         }];
 
-        Plotly.newPlot("bar", traceBar)
+        var layoutBar = {
+            title: {
+                text: "Top 10 OTUs",
+                font: {size: 30}   
+            },
+            yaxis: {title: "OTU ID"},
+            xaxis: {title: "Sample Values"}
+        };
+
+        Plotly.newPlot("bar", traceBar, layoutBar);
 
         let demographic = data.metadata[index];
         
@@ -71,7 +80,16 @@ function makePlot(index) {
             }
         }];
 
-        Plotly.newPlot("bubble", traceBubble);
+        var layoutBubble = {
+            title: {
+                text: "All OTUs Collected",
+                font: {size: 30}
+            },
+            xaxis: {title: "OTU ID"},
+            yaxis: {title: "Sample Values"}
+        };
+
+        Plotly.newPlot("bubble", traceBubble, layoutBubble);
 
 
         let traceGauge = [{
@@ -108,13 +126,16 @@ function makePlot(index) {
                 ],
               }
             }
-          ];          
+        ];          
 
-          var layoutGauge = {
-            title: "Belly Button Washing Frequency",
-          };
+        var layoutGauge = {
+            title: {
+                text: "Belly Button Washing Frequency",
+                font: {size: 30}   
+            }
+        };
           
-          Plotly.newPlot('gauge', traceGauge, layoutGauge);
+        Plotly.newPlot('gauge', traceGauge, layoutGauge);
     });
 };
 
