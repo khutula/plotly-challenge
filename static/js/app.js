@@ -21,8 +21,6 @@ d3.json(url).then(function(data) {
     };
 });
 
-//d3.select("select").onchange = optionChanged(this);
-
 // Call function to create the initial plot with first test subject in list (index 0)
 makePlot(0);
 
@@ -179,5 +177,3 @@ function makePlot(index) {
         Plotly.newPlot('gauge', traceGauge, layoutGauge);
     });
 };
-
-
