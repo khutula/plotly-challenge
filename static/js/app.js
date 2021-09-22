@@ -1,43 +1,71 @@
+// Save filepath of json file
 const url = "data/samples.json";
 
+// Create data promise
 const dataPromise = d3.json(url);
 
+// access data in json file
 d3.json(url).then(function(data) {
+
+    // Save the test subject IDs as a variable
     var subjectIDs = data.names;
 
+    // Loop through all subject IDs
     for (let i=0; i<subjectIDs.length; i++) {
+
+        // Convert subject ID string to integer
         let subject = parseInt(subjectIDs[i]);
 
+        // Add options for the drop down where text is the subject ID and value is the index
         d3.select("select").append("option").text(subject).attr("value", i);
     };
 });
 
 //d3.select("select").onchange = optionChanged(this);
 
+// Call function to create the initial plot with first test subject in list (index 0)
 makePlot(0);
 
+// Create change event for the drop down
 d3.select("select").on("change", function() {
+
+    // find index value of selected option
     let index = d3.select(this).property("value");
 
+    // Call function to create new plots for newly selected test subject
     makePlot(index);
 });
 
+// Create function to create all plots and demographic info
 function makePlot(index) {
     d3.json(url).then(function(data) {
+
+        // DATA PREP
+        // extract the sample values for selected subject
         let values = data.samples[index].sample_values;
 
+        // create top 10 slice of values and reverse order for proper chart display
         let valueSlice = values.slice(0,10).reverse();
 
+        // extract otu ids for selected subject
         let otuIDs = data.samples[index].otu_ids;
-
+        
+        // create top 10 slice of ids, make the id into a string, and reverse order for proper chart display
         let otuIDStrings = otuIDs.slice(0,10).map(function(item) {
             return `OTU ${item}`
         }).reverse();
 
+        // extract otu labels for selected subject
         let labels = data.samples[index].otu_labels;
 
+        // create top 10 slice of labels and reverse order for proper chart display
         let labelSlice = labels.slice(0,10).reverse();
 
+        // extract demographic data for selected subject
+        let demographic = data.metadata[index];
+
+        // BAR CHART CREATION
+        // Create trace for the horizontal bar chart
         let traceBar = [{
             x: valueSlice,
             y: otuIDStrings,
@@ -46,6 +74,7 @@ function makePlot(index) {
             orientation: "h"
         }];
 
+        // Create layout for horizontal bar chart
         var layoutBar = {
             title: {
                 text: "Top 10 OTUs",
@@ -55,19 +84,26 @@ function makePlot(index) {
             xaxis: {title: "Sample Values"}
         };
 
+        // Insert horizontal bar chart at html element with bar as the id
         Plotly.newPlot("bar", traceBar, layoutBar);
-
-        let demographic = data.metadata[index];
         
+        // DEMO INFO BLOCK CREATION
+        // Select html element where metadata will go
         let demoInfo = d3.select("#sample-metadata");
 
+        // Remove all spans and brs if they exist from previously selected subject
         demoInfo.selectAll("span").remove();
         demoInfo.selectAll("br").remove();
 
+        // Loop through all demographic items in dictionary
         for (let i=0; i<Object.entries(demographic).length; i++) {
+
+            // For each key value pair, create a span element and insert Key: Value and add a line break to the end
             demoInfo.append("span").text(`${Object.keys(demographic)[i]}: ${Object.values(demographic)[i]}`).append("br");
         };
 
+        // BUBBLE CHART CREATION
+        // Create trace for bubble chart
         let traceBubble = [{
             x: otuIDs,
             y: values,
@@ -80,6 +116,7 @@ function makePlot(index) {
             }
         }];
 
+        // Create layout for bubble chart
         var layoutBubble = {
             title: {
                 text: "All OTUs Collected",
@@ -89,9 +126,11 @@ function makePlot(index) {
             yaxis: {title: "Sample Values"}
         };
 
+        // Insert bubble chart at html element with bubble as the id
         Plotly.newPlot("bubble", traceBubble, layoutBubble);
 
-
+        // GAUGE CHART CREATION
+        // Create trace for gauge chart
         let traceGauge = [{
             type: "indicator",
             mode: "gauge+number",
@@ -128,13 +167,15 @@ function makePlot(index) {
             }
         ];          
 
+        // Create layout for gauge chart
         var layoutGauge = {
             title: {
                 text: "Belly Button Washing Frequency",
                 font: {size: 30}   
             }
         };
-          
+        
+        // Insert guage chart at html element with gauge as the id
         Plotly.newPlot('gauge', traceGauge, layoutGauge);
     });
 };
